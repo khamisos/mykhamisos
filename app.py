@@ -1,11 +1,11 @@
 import streamlit as st
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import BartForConditionalGeneration, BartTokenizer
 
 @st.cache_resource
 def load_model():
-    model_name = "mrm8488/bert-small2bert-small-finetuned-cnn_daily_mail-summarization"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    model_name = "facebook/bart-large-cnn"
+    tokenizer = BartTokenizer.from_pretrained(model_name)
+    model = BartForConditionalGeneration.from_pretrained(model_name)
     return tokenizer, model
 
 def summarize(text, tokenizer, model):
