@@ -3,7 +3,7 @@ from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 @st.cache_resource
 def load_model():
-    model_name = "moussaKam/arabert"
+    model_name = "m3hrdadfi/albert2arabic-summarization"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     return tokenizer, model
