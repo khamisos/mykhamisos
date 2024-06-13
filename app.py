@@ -1,7 +1,7 @@
 import streamlit as st
 from transformers import MBartForConditionalGeneration, MBart50TokenizerFast
 
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def load_model():
     model_name = "facebook/mbart-large-50-many-to-many-mmt"
     tokenizer = MBart50TokenizerFast.from_pretrained(model_name)
