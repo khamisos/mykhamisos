@@ -1,35 +1,51 @@
 import streamlit as st
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+import re
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.text_rank import TextRankSummarizer
+import nltk
 
-@st.cache_resource
-def load_model():
-    model_name = "youssefkhalil320/mT5-Arabic-text-summarization-finetunedKhalil"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-    return tokenizer, model
+# Download the NLTK punkt tokenizer
+nltk.download('punkt')
 
-def summarize(text, tokenizer, model):
-    inputs = tokenizer(text, return_tensors="pt", max_length=1024, truncation=True)
-    summary_ids = model.generate(
-        inputs["input_ids"],
-        max_length=200,
-        min_length=25,
-        length_penalty=2.0,
-        num_beams=4,
-        early_stopping=True
-    )
-    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-    return summary
+# Function to tokenize Arabic text into sentences using heuristics
+def tokenize_arabic_text(text):
+    # Split text by punctuation marks commonly used in Arabic to end sentences
+    sentences = re.split(r'(?<=[.؟!])\s+', text)
+    return sentences
 
-# Streamlit app
-st.title("Arabic Text Summarization")
+# Function to summarize Arabic text using TextRank
+def summarize_arabic_text(text, sentence_count=3):
+    # Tokenize the text into sentences
+    sentences = tokenize_arabic_text(text)
+    
+    # Join sentences to form a single string suitable for sumy
+    text = " ".join(sentences)
+    
+    # Initialize the parser and tokenizer
+    parser = PlaintextParser.from_string(text, Tokenizer("arabic"))
+    summarizer = TextRankSummarizer()
+    
+    # Generate the summary
+    summary = summarizer(parser.document, sentence_count)
+    
+    # Join the summarized sentences
+    summary_sentences = [str(sentence) for sentence in summary]
+    summary_text = " ".join(summary_sentences)
+    
+    return summary_text
 
-input_text = st.text_area("Enter Arabic text here:")
-if st.button("Summarize"):
-    if input_text.strip():
-        tokenizer, model = load_model()
-        summary = summarize(input_text, tokenizer, model)
-        st.subheader("Summary:")
+# Streamlit application
+st.title("أداة تلخيص النصوص العربية")
+st.write("أدخل النص العربي الذي ترغب في تلخيصه وعدد الجمل المطلوبة في الملخص.")
+
+text = st.text_area("أدخل النص هنا", height=200)
+sentence_count = st.number_input("عدد الجمل في الملخص", min_value=1, value=3)
+
+if st.button("تلخيص"):
+    if text.strip() != "":
+        summary = summarize_arabic_text(text, sentence_count)
+        st.subheader("الملخص:")
         st.write(summary)
     else:
-        st.error("Please enter some text to summarize.")
+        st.warning("يرجى إدخال نص للتلخيص.")
