@@ -46,6 +46,6 @@ if st.button("تلخيص"):
     if text.strip() != "":
         summary = summarize_arabic_text(text, sentence_count)
         st.subheader("الملخص:")
-        st.write(summary)
+        st.markdown(f'<div style="direction: rtl; text-align: right;">{summary}</div>', unsafe_allow_html=True)
     else:
         st.warning("يرجى إدخال نص للتلخيص.")
