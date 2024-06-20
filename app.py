@@ -35,19 +35,13 @@ def summarize_arabic_text(text, sentence_count=3):
     
     return summary_text
 
-# Custom CSS to set RTL direction and right-alignment
-st.markdown("""
-    <style>
-    .css-18e3th9 {
-        direction: rtl;
-        text-align: right;
-    }
-    .css-1d391kg {
-        direction: rtl;
-        text-align: right;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# Function to load CSS from a file
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+# Load custom CSS
+load_css("styles.css")
 
 # Streamlit application
 st.title("أداة تلخيص النصوص العربية")
