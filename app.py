@@ -35,6 +35,20 @@ def summarize_arabic_text(text, sentence_count=3):
     
     return summary_text
 
+# Custom CSS to set RTL direction and right-alignment
+st.markdown("""
+    <style>
+    .css-18e3th9 {
+        direction: rtl;
+        text-align: right;
+    }
+    .css-1d391kg {
+        direction: rtl;
+        text-align: right;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Streamlit application
 st.title("أداة تلخيص النصوص العربية")
 st.write("أدخل النص العربي الذي ترغب في تلخيصه وعدد الجمل المطلوبة في الملخص.")
